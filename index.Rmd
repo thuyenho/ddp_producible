@@ -1,0 +1,68 @@
+---
+title       : Application caculates RMSE of the duration of the eruption for the Old Faithful geyser
+subtitle    : 
+author      : Thuyen Ho
+job         : Web developer
+framework   : html5slides      # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Agenda
+
+1. Summary dataset
+2. Create training and testing sets
+3. Build and summary a model fit
+4. Calculate RMSE on training and testing sets
+
+---
+
+## Summary dataset
+
+- Load dataset
+
+```{r}
+  data(faithful)
+```
+
+- Summary dataset
+
+```{r}
+  summary(faithful)
+```
+
+---
+
+## Create training and testing sets
+
+Create training set with 70% percent of dataset
+
+```{r, echo=FALSE}
+library(caret)
+```
+
+```{r}
+inTrain <- createDataPartition(y=faithful$waiting, p=0.5, list=FALSE)
+trainFaith <- faithful[inTrain,]; testFaith <- faithful[-inTrain,]
+```
+
+---
+
+## Build and summary a model fit
+
+```{r}
+lm1 <- lm(eruptions ~ waiting,data=trainFaith)
+summary(lm1)
+```
+
+---
+
+## Calculate RMSE on training and testing sets
+
+```{r}
+c(trainRMSE = sqrt(sum((lm1$fitted-trainFaith$eruptions)^2)),
+    testRMSE = sqrt(sum((predict(lm1,newdata=testFaith)-testFaith$eruptions)^2)))
+```

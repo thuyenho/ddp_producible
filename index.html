@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>Application caculates RMSE of the duration of the eruption for the Old Faithful geyser</title>
+	<meta name="description" content="Application caculates RMSE of the duration of the eruption for the Old Faithful geyser">
+	<meta name="author" content="Thuyen Ho">
+	<meta name="generator" content="slidify" />
+	
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/html5slides/default/styles.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />  <link rel="stylesheet" href = "assets/css/ribbons.css">
+  
+</head>
+<body style='display: none'>
+	<section class='slides layout-regular template-regular'>
+     <article class="" id="slide-1" style="background:;">
+  <h3>Agenda</h3>
+  <ol>
+<li>Summary dataset</li>
+<li>Create training and testing sets</li>
+<li>Build and summary a model fit</li>
+<li>Calculate RMSE on training and testing sets</li>
+</ol>
+
+</article>
+
+<article class="" id="slide-2" style="background:;">
+  <h3>Summary dataset</h3>
+  <ul>
+<li>Load dataset</li>
+</ul>
+
+<pre><code class="r">  data(faithful)
+</code></pre>
+
+<ul>
+<li>Summary dataset</li>
+</ul>
+
+<pre><code class="r">  summary(faithful)
+</code></pre>
+
+<pre><code>##    eruptions        waiting    
+##  Min.   :1.600   Min.   :43.0  
+##  1st Qu.:2.163   1st Qu.:58.0  
+##  Median :4.000   Median :76.0  
+##  Mean   :3.488   Mean   :70.9  
+##  3rd Qu.:4.454   3rd Qu.:82.0  
+##  Max.   :5.100   Max.   :96.0
+</code></pre>
+
+</article>
+
+<article class="" id="slide-3" style="background:;">
+  <h3>Create training and testing sets</h3>
+  <p>Create training set with 70% percent of dataset</p>
+
+<pre><code class="r">inTrain &lt;- createDataPartition(y=faithful$waiting, p=0.5, list=FALSE)
+trainFaith &lt;- faithful[inTrain,]; testFaith &lt;- faithful[-inTrain,]
+</code></pre>
+
+</article>
+
+<article class="" id="slide-4" style="background:;">
+  <h3>Build and summary a model fit</h3>
+  <pre><code class="r">lm1 &lt;- lm(eruptions ~ waiting,data=trainFaith)
+summary(lm1)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = eruptions ~ waiting, data = trainFaith)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.30114 -0.37501  0.06992  0.36080  0.96442 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -1.787883   0.224832  -7.952 6.54e-13 ***
+## waiting      0.074313   0.003129  23.750  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.5079 on 135 degrees of freedom
+## Multiple R-squared:  0.8069, Adjusted R-squared:  0.8055 
+## F-statistic: 564.1 on 1 and 135 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+</article>
+
+<article class="" id="slide-5" style="background:;">
+  <h3>Calculate RMSE on training and testing sets</h3>
+  <pre><code class="r">c(trainRMSE = sqrt(sum((lm1$fitted-trainFaith$eruptions)^2)),
+    testRMSE = sqrt(sum((predict(lm1,newdata=testFaith)-testFaith$eruptions)^2)))
+</code></pre>
+
+<pre><code>## trainRMSE  testRMSE 
+##  5.901501  5.642199
+</code></pre>
+
+</article>
+
+  </section>
+</body>
+  <!-- LOAD JAVASCRIPTS  -->
+	<script src='libraries/frameworks/html5slides/default/slides.js'></script>
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+	</html>
